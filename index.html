@@ -1,763 +1,766 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Royal Car Parking - Management System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-    /* 1. CORE FUNCTIONAL STYLES */
-    .slot-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 10px; }
-    .dropdown-content { display: none; }
-    .dropdown-content.show { display: block; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Car Parking - Management System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+/* 1. CORE FUNCTIONAL STYLES */
+.slot-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 10px; }
+.dropdown-content { display: none; }
+.dropdown-content.show { display: block; }
 
-    /* 2. RAIN EFFECT CONTAINER */
-    body {
-        margin: 0;
-        min-height: 100vh;
-        background: linear-gradient(180deg, #0f172a 0%, #134e4a 100%);
-        overflow-x: hidden;
-        position: relative;
-    }
+/* 2. RAIN EFFECT CONTAINER */
+body {
+margin: 0;
+min-height: 100vh;
+background: linear-gradient(180deg, #0f172a 0%, #134e4a 100%);
+overflow-x: hidden;
+position: relative;
+}
 
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        pointer-events: none;
-        background-image: 
-            radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 1px, transparent 1px);
-        background-size: 100px 100px;
-        animation: rainFall 0.8s linear infinite;
-    }
+body::before {
+content: "";
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+z-index: 1;
+pointer-events: none;
+background-image:
+radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 1px, transparent 1px);
+background-size: 100px 100px;
+animation: rainFall 0.8s linear infinite;
+}
 
-    @keyframes rainFall {
-        0% { transform: translateY(-100px); }
-        100% { transform: translateY(100px); }
-    }
+@keyframes rainFall {
+0% { transform: translateY(-100px); }
+100% { transform: translateY(100px); }
+}
 
-    /* 3. THE DASHBOARD */
-    #dashboard {
-        position: relative;
-        background: rgba(255, 255, 255, 0.85) !important;
-        backdrop-filter: blur(12px);
-        border-radius: 2.5rem;
-        padding: 3rem;
-        max-width: 96% !important;
-        margin: 2rem auto;
-        z-index: 5;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    }
+/* 3. THE DASHBOARD */
+#dashboard {
+position: relative;
+background: rgba(255, 255, 255, 0.85) !important;
+backdrop-filter: blur(12px);
+border-radius: 2.5rem;
+padding: 3rem;
+max-width: 96% !important;
+margin: 2rem auto;
+z-index: 5;
+border: 1px solid rgba(255, 255, 255, 0.3);
+box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
 
-    /* 4. MOVING BORDER */
-    #dashboard::after {
-        content: '';
-        position: absolute;
-        inset: -2px;
-        background: linear-gradient(90deg, #2dd4bf, #0ea5e9, #22c55e, #2dd4bf);
-        background-size: 300% 100%;
-        animation: borderMove 4s linear infinite;
-        z-index: -1;
-        border-radius: 2.6rem;
-    }
+/* 4. MOVING BORDER */
+#dashboard::after {
+content: '';
+position: absolute;
+inset: -2px;
+background: linear-gradient(90deg, #2dd4bf, #0ea5e9, #22c55e, #2dd4bf);
+background-size: 300% 100%;
+animation: borderMove 4s linear infinite;
+z-index: -1;
+border-radius: 2.6rem;
+}
 
-    @keyframes borderMove {
-        0% { background-position: 0% 0%; }
-        100% { background-position: 100% 0%; }
-    }
+@keyframes borderMove {
+0% { background-position: 0% 0%; }
+100% { background-position: 100% 0%; }
+}
 
-    /* 5. BUTTONS */
-    button, .dropbtn {
-        background: linear-gradient(135deg, #0d9488 0%, #065f46 100%) !important;
-        border: none !important;
-        border-radius: 1rem !important;
-        font-weight: 700 !important;
-        color: white !important;
-        transition: 0.3s all ease !important;
-        position: relative;
-        overflow: hidden;
-    }
+/* 5. BUTTONS */
+button, .dropbtn {
+background: linear-gradient(135deg, #0d9488 0%, #065f46 100%) !important;
+border: none !important;
+border-radius: 1rem !important;
+font-weight: 700 !important;
+color: white !important;
+transition: 0.3s all ease !important;
+position: relative;
+overflow: hidden;
+}
 
-    button:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(13, 148, 136, 0.4);
-    }
+button:hover {
+transform: translateY(-4px);
+box-shadow: 0 10px 20px rgba(13, 148, 136, 0.4);
+}
 
-    button::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: 0.5s;
-    }
-    button:hover::before { left: 100%; }
+button::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+transition: 0.5s;
+}
+button:hover::before { left: 100%; }
 
-    /* 6. SLOT CARDS */
-    #slotMap {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
-        gap: 1.5rem;
-    }
+/* 6. SLOT CARDS */
+#slotMap {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+gap: 1.5rem;
+}
 
-    .slot-card {
-        border-radius: 1.5rem !important;
-        border: 2px solid transparent !important;
-        background: white !important;
-    }
+.slot-card {
+border-radius: 1.5rem !important;
+border: 2px solid transparent !important;
+background: white !important;
+}
 
-    .slot-card:hover {
-        transform: scale(1.05);
-        border-color: #2dd4bf !important;
-    }
+.slot-card:hover {
+transform: scale(1.05);
+border-color: #2dd4bf !important;
+}
 
-    .slot-card.bg-green-100 {
-        background: linear-gradient(135deg, #f0fdfa, #ccfbf1) !important;
-        color: #134e4a !important;
-    }
+.slot-card.bg-green-100 {
+background: linear-gradient(135deg, #f0fdfa, #ccfbf1) !important;
+color: #134e4a !important;
+}
 
-    .slot-card.bg-blue-600 {
-        background: linear-gradient(135deg, #0891b2, #0e7490) !important;
-        color: white !important;
-    }
+.slot-card.bg-blue-600 {
+background: linear-gradient(135deg, #0891b2, #0e7490) !important;
+color: white !important;
+}
 
-    /* NAVBAR */
-    nav {
-        background: rgba(15, 23, 42, 0.9) !important;
-        backdrop-filter: blur(10px);
-        border-bottom: 2px solid #0d9488 !important;
-    }
+/* NAVBAR */
+nav {
+background: rgba(15, 23, 42, 0.9) !important;
+backdrop-filter: blur(10px);
+border-bottom: 2px solid #0d9488 !important;
+}
 
-    /* SYNC INDICATOR */
-    #syncIndicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 999px;
-        transition: all 0.3s ease;
-    }
-    #syncIndicator.syncing { background: rgba(234,179,8,0.2); color: #ca8a04; }
-    #syncIndicator.synced  { background: rgba(34,197,94,0.2); color: #16a34a; }
-    #syncIndicator.offline { background: rgba(239,68,68,0.2); color: #dc2626; }
+/* SYNC INDICATOR */
+#syncIndicator {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 11px;
+font-weight: 700;
+padding: 4px 10px;
+border-radius: 999px;
+transition: all 0.3s ease;
+}
+#syncIndicator.syncing { background: rgba(234,179,8,0.2); color: #ca8a04; }
+#syncIndicator.synced { background: rgba(34,197,94,0.2); color: #16a34a; }
+#syncIndicator.offline { background: rgba(239,68,68,0.2); color: #dc2626; }
 
-    #syncIndicator .dot {
-        width: 7px; height: 7px;
-        border-radius: 50%;
-        background: currentColor;
-    }
-    #syncIndicator.syncing .dot {
-        animation: pulse 1s infinite;
-    }
-    @keyframes pulse {
-        0%,100% { opacity: 1; } 50% { opacity: 0.2; }
-    }
+#syncIndicator .dot {
+width: 7px; height: 7px;
+border-radius: 50%;
+background: currentColor;
+}
+#syncIndicator.syncing .dot {
+animation: pulse 1s infinite;
+}
+@keyframes pulse {
+0%,100% { opacity: 1; } 50% { opacity: 0.2; }
+}
 </style>
 </head>
 <body class="bg-slate-50 min-h-screen font-sans text-slate-900">
 
-    <nav class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
-                <h1 class="text-2xl font-black italic tracking-tight">ROYAL CAR PARKING</h1>
-                <div id="liveClock" class="text-[10px] md:text-sm font-mono bg-blue-800 px-3 py-1 rounded-lg border border-blue-700 opacity-90">
-                    Loading Time...
-                </div>
-            </div>
-            <div id="navControls" class="flex items-center gap-3">
-                <div id="syncIndicator" class="synced hidden">
-                    <span class="dot"></span>
-                    <span id="syncText">Synced</span>
-                </div>
-                <span id="userRoleBadge" class="hidden bg-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"></span>
-                <button id="logoutBtn" class="hidden bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-lg text-sm font-bold transition">Logout</button>
-            </div>
-        </div>
-    </nav>
+<nav class="bg-blue-900 text-white p-4 shadow-lg sticky top-0 z-50">
+<div class="container mx-auto flex justify-between items-center">
+<div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+<h1 class="text-2xl font-black italic tracking-tight">ROYAL CAR PARKING</h1>
+<div id="liveClock" class="text-[10px] md:text-sm font-mono bg-blue-800 px-3 py-1 rounded-lg border border-blue-700 opacity-90">
+Loading Time...
+</div>
+</div>
+<div id="navControls" class="flex items-center gap-3">
+<div id="syncIndicator" class="synced hidden">
+<span class="dot"></span>
+<span id="syncText">Synced</span>
+</div>
+<span id="userRoleBadge" class="hidden bg-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"></span>
+<button id="logoutBtn" class="hidden bg-red-500 hover:bg-red-600 px-4 py-1.5 rounded-lg text-sm font-bold transition">Logout</button>
+</div>
+</div>
+</nav>
 
-    <section id="loginSection" class="max-w-md mx-auto mt-16 p-8 bg-white rounded-3xl shadow-2xl border border-slate-200">
-        <div class="text-center mb-8">
-            <div class="inline-block bg-blue-100 p-4 rounded-2xl mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-            </div>
-            <h2 class="text-2xl font-bold text-slate-800">️ Royal car parking</h2>
-        </div>
-        
-        <div class="flex mb-6 bg-slate-100 rounded-xl p-1">
-            <button onclick="toggleLoginTab('staff')" id="tabStaff" class="w-1/2 py-2.5 rounded-lg font-bold text-blue-900 bg-white shadow-sm transition-all">Staff Login</button>
-            <button onclick="toggleLoginTab('customer')" id="tabCust" class="w-1/2 py-2.5 rounded-lg font-bold text-slate-500 transition-all">Customer Login</button>
-        </div>
+<section id="loginSection" class="max-w-md mx-auto mt-16 p-8 bg-white rounded-3xl shadow-2xl border border-slate-200">
+<div class="text-center mb-8">
+<div class="inline-block bg-blue-100 p-4 rounded-2xl mb-4">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-blue-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+</svg>
+</div>
+<h2 class="text-2xl font-bold text-slate-800">️ Royal car parking</h2>
+</div>
 
-        <form id="staffLoginForm" class="space-y-4">
-            <input type="text" id="staffId" placeholder="Login ID" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
-            <input type="password" id="staffPass" placeholder="Password" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
-            <button type="submit" class="w-full bg-blue-900 text-white py-3.5 rounded-xl font-bold hover:bg-blue-800 transition">Login as Staff</button>
-        </form>
+<div class="flex mb-6 bg-slate-100 rounded-xl p-1">
+<button onclick="toggleLoginTab('staff')" id="tabStaff" class="w-1/2 py-2.5 rounded-lg font-bold text-blue-900 bg-white shadow-sm transition-all">Staff Login</button>
+<button onclick="toggleLoginTab('customer')" id="tabCust" class="w-1/2 py-2.5 rounded-lg font-bold text-slate-500 transition-all">Customer Login</button>
+</div>
 
-        <form id="customerLoginForm" class="space-y-4 hidden">
-            <input type="text" id="custSlotInput" placeholder="Slot Number (e.g. Shed 1)" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
-            <input type="tel" id="custPhoneInput" placeholder="Phone Number" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
-            <button type="submit" class="w-full bg-green-700 text-white py-3.5 rounded-xl font-bold hover:bg-green-600 transition">View Slot Details</button>
-        </form>
-    </section>
+<form id="staffLoginForm" class="space-y-4">
+<input type="text" id="staffId" placeholder="Login ID" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
+<input type="password" id="staffPass" placeholder="Password" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
+<button type="submit" class="w-full bg-blue-900 text-white py-3.5 rounded-xl font-bold hover:bg-blue-800 transition">Login as Staff</button>
+</form>
 
-    <main id="dashboard" class="hidden container mx-auto py-8 px-4"></main>
+<form id="customerLoginForm" class="space-y-4 hidden">
+<input type="text" id="custSlotInput" placeholder="Slot Number (e.g. Shed 1)" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
+<input type="tel" id="custPhoneInput" placeholder="Phone Number" class="w-full p-3 border border-slate-300 rounded-xl outline-none" required>
+<button type="submit" class="w-full bg-green-700 text-white py-3.5 rounded-xl font-bold hover:bg-green-600 transition">View Slot Details</button>
+</form>
+</section>
 
-    <div id="modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 relative">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
-            <div id="modalBody"></div>
-        </div>
-    </div>
+<main id="dashboard" class="hidden container mx-auto py-8 px-4"></main>
 
-    <script>
-        // ============================================================
-        // CONFIGURATION
-        // ============================================================
-        const STAFF_USERS = { "admin": "123", "manager": "456" };
-        const UPDATE_PASSKEY = "1234";
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwX2O5NuHPnElVboWU83QwCmPt4ZNBH8jVSQWxWnsRlYAMG4-XAGdXjuWHSJXV9tYhe7w/exec";
-        const SYNC_POLL_INTERVAL = 15000;
+<div id="modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+<div class="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 relative">
+<button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+</button>
+<div id="modalBody"></div>
+</div>
+</div>
 
-        let db = JSON.parse(localStorage.getItem('RP_DB')) || { slots: {}, applications: [], billHistory: [], removalHistory: [] };
-        let activeUser = null;
-        let syncPollTimer = null;
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const STAFF_USERS = { "admin": "123", "manager": "456" };
+const UPDATE_PASSKEY = "1234";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkDL0IAqXEW36uPyzt29-oCPXK9J83ABVNNzg4WXHXWAbpIA9ZkMWR3lcufSaxe3sltg/exec";
+const SYNC_POLL_INTERVAL = 15000;
 
-        // ============================================================
-        // SYNC INDICATOR
-        // ============================================================
-        function setSyncStatus(state, text) {
-            const el = document.getElementById('syncIndicator');
-            const txt = document.getElementById('syncText');
-            if (!el) return;
-            el.className = `synced hidden`;
-            el.classList.remove('hidden');
-            el.classList.add(state);
-            txt.textContent = text;
-        }
+let db = JSON.parse(localStorage.getItem('RP_DB')) || { slots: {}, applications: [], billHistory: [], removalHistory: [] };
+let activeUser = null;
+let syncPollTimer = null;
 
-        // ============================================================
-        // SAVE
-        // ============================================================
-        function save() {
-            db.lastModified = Date.now();
-            localStorage.setItem('RP_DB', JSON.stringify(db));
-            setSyncStatus('syncing', 'Saving…');
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ action: 'sync_all_data', db })
-            })
-            .then(() => setSyncStatus('synced', 'Saved ✓'))
-            .catch(() => setSyncStatus('offline', 'Offline'));
-        }
+// ============================================================
+// SYNC INDICATOR
+// ============================================================
+function setSyncStatus(state, text) {
+const el = document.getElementById('syncIndicator');
+const txt = document.getElementById('syncText');
+if (!el) return;
+el.className = `synced hidden`;
+el.classList.remove('hidden');
+el.classList.add(state);
+txt.textContent = text;
+}
 
-        // ============================================================
-        // FETCH REMOTE DB
-        // ============================================================
-        async function fetchRemoteDB() {
-            try {
-                setSyncStatus('syncing', 'Checking…');
-                const res = await fetch(SCRIPT_URL + '?action=get_db&t=' + Date.now());
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const remoteDB = await res.json();
-                const localTs  = db.lastModified || 0;
-                const remoteTs = remoteDB.lastModified || 0;
-                if (remoteTs > localTs) {
-                    db = remoteDB;
-                    localStorage.setItem('RP_DB', JSON.stringify(db));
-                    if (activeUser) renderDashboard();
-                    setSyncStatus('synced', 'Updated ✓');
-                } else {
-                    setSyncStatus('synced', 'Up to date');
-                }
-            } catch (err) {
-                console.warn('Remote sync failed:', err);
-                setSyncStatus('offline', 'No connection');
-            }
-        }
+// ============================================================
+// SAVE
+// ============================================================
+function save() {
+db.lastModified = Date.now();
+localStorage.setItem('RP_DB', JSON.stringify(db));
+setSyncStatus('syncing', 'Saving…');
+fetch(SCRIPT_URL, {
+method: 'POST',
+mode: 'no-cors',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ action: 'sync_all_data', db })
+})
+.then(() => setSyncStatus('synced', 'Saved ✓'))
+.catch(() => setSyncStatus('offline', 'Offline'));
+}
 
-        // ============================================================
-        // POLLING
-        // ============================================================
-        function startPolling() {
-            stopPolling();
-            fetchRemoteDB();
-            syncPollTimer = setInterval(fetchRemoteDB, SYNC_POLL_INTERVAL);
-        }
+// ============================================================
+// FETCH REMOTE DB
+// ============================================================
+async function fetchRemoteDB() {
+try {
+setSyncStatus('syncing', 'Checking…');
+const res = await fetch(SCRIPT_URL + '?action=get_db&t=' + Date.now());
+if (!res.ok) throw new Error('HTTP ' + res.status);
+const remoteDB = await res.json();
+const localTs = db.lastModified || 0;
+const remoteTs = remoteDB.lastModified || 0;
+if (remoteTs > localTs) {
+db = remoteDB;
+localStorage.setItem('RP_DB', JSON.stringify(db));
+if (activeUser) renderDashboard();
+setSyncStatus('synced', 'Updated ✓');
+} else {
+setSyncStatus('synced', 'Up to date');
+}
+} catch (err) {
+console.warn('Remote sync failed:', err);
+setSyncStatus('offline', 'No connection');
+}
+}
 
-        function stopPolling() {
-            if (syncPollTimer) { clearInterval(syncPollTimer); syncPollTimer = null; }
-        }
+// ============================================================
+// POLLING
+// ============================================================
+function startPolling() {
+stopPolling();
+fetchRemoteDB();
+syncPollTimer = setInterval(fetchRemoteDB, SYNC_POLL_INTERVAL);
+}
 
-        // ============================================================
-        // CLOCK
-        // ============================================================
-        function updateClock() {
-            const now = new Date();
-            const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            const clockEl = document.getElementById('liveClock');
-            if (clockEl) clockEl.textContent = now.toLocaleString('en-IN', options);
-        }
-        setInterval(updateClock, 1000);
+function stopPolling() {
+if (syncPollTimer) { clearInterval(syncPollTimer); syncPollTimer = null; }
+}
 
-        // ============================================================
-        // DB INIT
-        // ============================================================
-        function initDB() {
-            // Only initialize and save if this is a completely fresh start (no slots at all).
-            // DO NOT call save() unconditionally — it would overwrite newer sheet data
-            // with stale local data every time the page loads on any device.
-            if (Object.keys(db.slots).length === 0) {
-                for(let i=1; i<=21; i++) db.slots[`Shed ${i}`] = { status: 'vacant', type: 'Shed' };
-                "ABCDEFGHIJKLMNOPQRSTUVWX".split("").forEach(l => db.slots[`Shed ${l}`] = { status: 'vacant', type: 'Shed' });
-                for(let i=22; i<=53; i++) db.slots[`Shed ${i}`] = { status: 'vacant', type: 'Shed' };
-                for(let i=1; i<=15; i++) db.slots[`Open ${i}`] = { status: 'vacant', type: 'Open' };
-                if (!db.billHistory)    db.billHistory    = [];
-                if (!db.removalHistory) db.removalHistory = [];
-                save(); // only save on genuine first-time setup
-                return;
-            }
-            // For existing data: patch missing arrays in memory only, no save()
-            if (!db.billHistory)    db.billHistory    = [];
-            if (!db.removalHistory) db.removalHistory = [];
-            // No save() here — sheet remains the source of truth
-        }
+// ============================================================
+// CLOCK
+// ============================================================
+function updateClock() {
+const now = new Date();
+const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+const clockEl = document.getElementById('liveClock');
+if (clockEl) clockEl.textContent = now.toLocaleString('en-IN', options);
+}
+setInterval(updateClock, 1000);
 
-        // ============================================================
-        // LOGIN TABS
-        // ============================================================
-        function toggleLoginTab(type) {
-            document.getElementById('staffLoginForm').classList.toggle('hidden', type !== 'staff');
-            document.getElementById('customerLoginForm').classList.toggle('hidden', type !== 'customer');
-            document.getElementById('tabStaff').className = type === 'staff' ? 'w-1/2 py-2.5 rounded-lg font-bold text-blue-900 bg-white shadow-sm' : 'w-1/2 py-2.5 rounded-lg font-bold text-slate-500';
-            document.getElementById('tabCust').className = type === 'customer' ? 'w-1/2 py-2.5 rounded-lg font-bold text-green-700 bg-white shadow-sm' : 'w-1/2 py-2.5 rounded-lg font-bold text-slate-500';
-        }
+// ============================================================
+// DB INIT
+// ============================================================
+function initDB() {
+// Only initialize and save if this is a completely fresh start (no slots at all).
+// DO NOT call save() unconditionally — it would overwrite newer sheet data
+// with stale local data every time the page loads on any device.
+if (Object.keys(db.slots).length === 0) {
+for(let i=1; i<=21; i++) db.slots[`Shed ${i}`] = { status: 'vacant', type: 'Shed' };
+"ABCDEFGHIJKLMNOPQRSTUVWX".split("").forEach(l => db.slots[`Shed ${l}`] = { status: 'vacant', type: 'Shed' });
+for(let i=22; i<=53; i++) db.slots[`Shed ${i}`] = { status: 'vacant', type: 'Shed' };
+for(let i=1; i<=15; i++) db.slots[`Open ${i}`] = { status: 'vacant', type: 'Open' };
+if (!db.billHistory) db.billHistory = [];
+if (!db.removalHistory) db.removalHistory = [];
+save(); // only save on genuine first-time setup
+return;
+}
+// For existing data: patch missing arrays in memory only, no save()
+if (!db.billHistory) db.billHistory = [];
+if (!db.removalHistory) db.removalHistory = [];
+// No save() here — sheet remains the source of truth
+}
 
-        document.getElementById('staffLoginForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await fetchRemoteDB();
-            const id = document.getElementById('staffId').value;
-            const pw = document.getElementById('staffPass').value;
-            if (STAFF_USERS[id] === pw) login(id); else alert("Invalid Credentials");
-        };
+// ============================================================
+// LOGIN TABS
+// ============================================================
+function toggleLoginTab(type) {
+document.getElementById('staffLoginForm').classList.toggle('hidden', type !== 'staff');
+document.getElementById('customerLoginForm').classList.toggle('hidden', type !== 'customer');
+document.getElementById('tabStaff').className = type === 'staff' ? 'w-1/2 py-2.5 rounded-lg font-bold text-blue-900 bg-white shadow-sm' : 'w-1/2 py-2.5 rounded-lg font-bold text-slate-500';
+document.getElementById('tabCust').className = type === 'customer' ? 'w-1/2 py-2.5 rounded-lg font-bold text-green-700 bg-white shadow-sm' : 'w-1/2 py-2.5 rounded-lg font-bold text-slate-500';
+}
 
-        document.getElementById('customerLoginForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await fetchRemoteDB();
-            const inputSlot = document.getElementById('custSlotInput').value.trim();
-            const phone = document.getElementById('custPhoneInput').value.trim();
-            const slotKey = Object.keys(db.slots).find(k => k.toLowerCase() === inputSlot.toLowerCase());
-            const slot = slotKey ? db.slots[slotKey] : null;
-            if (slot && String(slot.phone) === String(phone) && slot.status === 'occupied') login('customer', slotKey);
-            else alert("Slot details not found!");
-        };
+document.getElementById('staffLoginForm').onsubmit = async (e) => {
+e.preventDefault();
+await fetchRemoteDB();
+const id = document.getElementById('staffId').value;
+const pw = document.getElementById('staffPass').value;
+if (STAFF_USERS[id] === pw) login(id); else alert("Invalid Credentials");
+};
 
-        // ============================================================
-        // LOGIN / LOGOUT
-        // ============================================================
-        function login(role, slotId = null) {
-            activeUser = { role, slotId };
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            document.getElementById('logoutBtn').classList.remove('hidden');
-            document.getElementById('userRoleBadge').textContent = role;
-            document.getElementById('userRoleBadge').classList.remove('hidden');
-            startPolling();
-            renderDashboard();
-        }
+document.getElementById('customerLoginForm').onsubmit = async (e) => {
+e.preventDefault();
+await fetchRemoteDB();
+const inputSlot = document.getElementById('custSlotInput').value.trim();
+const phone = document.getElementById('custPhoneInput').value.trim();
+const slotKey = Object.keys(db.slots).find(k => k.toLowerCase() === inputSlot.toLowerCase());
+const slot = slotKey ? db.slots[slotKey] : null;
+if (slot && String(slot.phone) === String(phone) && slot.status === 'occupied') login('customer', slotKey);
+else alert("Slot details not found!");
+};
 
-        document.getElementById('logoutBtn').onclick = () => {
-            stopPolling();
-            location.reload();
-        };
+// ============================================================
+// LOGIN / LOGOUT
+// ============================================================
+function login(role, slotId = null) {
+activeUser = { role, slotId };
+document.getElementById('loginSection').classList.add('hidden');
+document.getElementById('dashboard').classList.remove('hidden');
+document.getElementById('logoutBtn').classList.remove('hidden');
+document.getElementById('userRoleBadge').textContent = role;
+document.getElementById('userRoleBadge').classList.remove('hidden');
+startPolling();
+renderDashboard();
+}
 
-        // ============================================================
-        // DROPDOWN TOGGLES
-        // ============================================================
-        function toggleAppDropdown()  { document.getElementById("appDropdown").classList.toggle("show"); }
-        function toggleHistDropdown() { document.getElementById("histDropdown").classList.toggle("show"); }
+document.getElementById('logoutBtn').onclick = () => {
+stopPolling();
+location.reload();
+};
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn')) {
-                var dropdowns = document.getElementsByClassName("dropdown-content");
-                for (var i = 0; i < dropdowns.length; i++) {
-                    if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
-                }
-            }
-        };
+// ============================================================
+// DROPDOWN TOGGLES
+// ============================================================
+function toggleAppDropdown() { document.getElementById("appDropdown").classList.toggle("show"); }
+function toggleHistDropdown() { document.getElementById("histDropdown").classList.toggle("show"); }
 
-        // ============================================================
-        // RENDER DASHBOARD
-        // ============================================================
-        function renderDashboard() {
-            const main = document.getElementById('dashboard');
-            if (activeUser.role === 'customer') { renderCustomerDash(main); return; }
+window.onclick = function(event) {
+if (!event.target.matches('.dropbtn')) {
+var dropdowns = document.getElementsByClassName("dropdown-content");
+for (var i = 0; i < dropdowns.length; i++) {
+if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
+}
+}
+};
 
-            main.innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-                    <div class="relative w-full md:w-96">
-                        <input type="text" onkeyup="renderMap(this.value)" placeholder="Search slot ID..." class="w-full p-3 pl-10 border rounded-2xl shadow-sm">
-                        <span class="absolute left-3 top-3.5 opacity-40">🔍</span>
-                    </div>
-                    <div class="flex flex-wrap gap-3 w-full md:w-auto">
-                        ${activeUser.role === 'manager' ? `
-                            <div class="relative inline-block">
-                                <button onclick="toggleAppDropdown()" class="dropbtn bg-blue-900 text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2">
-                                    Application <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </button>
-                                <div id="appDropdown" class="dropdown-content absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 z-[60] overflow-hidden">
-                                    <button onclick="openAppForm()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-blue-900 font-bold transition">New Application</button>
-                                    <button onclick="openEditForm()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-indigo-900 font-bold border-t transition">Edit Application</button>
-                                    <button onclick="openRemoveForm()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-red-600 font-bold border-t transition">Remove Car</button>
-                                </div>
-                            </div>
-                            <button onclick="openBillForm()" class="bg-green-600 text-white px-5 py-3 rounded-2xl font-bold">📄 Bill</button>
-                        ` : ''}
-                        
-                        <div class="relative inline-block">
-                            <button onclick="toggleHistDropdown()" class="dropbtn bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2">
-                                History <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <div id="histDropdown" class="dropdown-content absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 z-[60] overflow-hidden">
-                                <button onclick="viewApprovalHistory()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-blue-900 font-bold transition">Approval History</button>
-                                <button onclick="viewBillHistory()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-green-700 font-bold border-t transition">Bill History</button>
-                                <button onclick="viewRemovalHistory()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-red-600 font-bold border-t transition">Car Removal History</button>
-                            </div>
-                        </div>
+// ============================================================
+// RENDER DASHBOARD
+// ============================================================
+function renderDashboard() {
+const main = document.getElementById('dashboard');
+if (activeUser.role === 'customer') { renderCustomerDash(main); return; }
 
-                        ${activeUser.role === 'admin' ? `<button onclick="applyMonthlyRent()" class="bg-red-600 text-white px-5 py-3 rounded-2xl font-bold">➕ Update Rent</button>` : ''}
-                        <button onclick="viewPendingList()" class="bg-orange-500 text-white px-5 py-3 rounded-2xl font-bold">Pending</button>
-                    </div>
-                </div>
-                ${activeUser.role === 'admin' ? renderAdminAlerts() : ''}
-                <div id="slotMap" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-3"></div>
-            `;
-            renderMap();
-        }
+main.innerHTML = `
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+<div class="relative w-full md:w-96">
+<input type="text" onkeyup="renderMap(this.value)" placeholder="Search slot ID..." class="w-full p-3 pl-10 border rounded-2xl shadow-sm">
+<span class="absolute left-3 top-3.5 opacity-40">🔍</span>
+</div>
+<div class="flex flex-wrap gap-3 w-full md:w-auto">
+${activeUser.role === 'manager' ? `
+<div class="relative inline-block">
+<button onclick="toggleAppDropdown()" class="dropbtn bg-blue-900 text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2">
+Application <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</button>
+<div id="appDropdown" class="dropdown-content absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 z-[60] overflow-hidden">
+<button onclick="openAppForm()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-blue-900 font-bold transition">New Application</button>
+<button onclick="openEditForm()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-indigo-900 font-bold border-t transition">Edit Application</button>
+<button onclick="openRemoveForm()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-red-600 font-bold border-t transition">Remove Car</button>
+</div>
+</div>
+<button onclick="openBillForm()" class="bg-green-600 text-white px-5 py-3 rounded-2xl font-bold">📄 Bill</button>
+` : ''}
 
-        function renderMap(query = "") {
-            const container = document.getElementById('slotMap');
-            container.innerHTML = "";
-            Object.keys(db.slots).forEach(id => {
-                if (query && !id.toLowerCase().includes(query.toLowerCase())) return;
-                const slot = db.slots[id];
-                const color = slot.status === 'vacant' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-blue-600 border-blue-800 text-white';
-                container.innerHTML += `<div onclick="viewSlot('${id}')" class="slot-card border-2 ${color} p-3 rounded-2xl text-center cursor-pointer">
-                    <div class="text-[9px] font-black uppercase ${slot.status === 'occupied' ? 'opacity-90' : 'opacity-50'} tracking-widest">${slot.type || 'Shed'}</div>
-                    <div class="text-lg font-black">${id.replace('Shed ','').replace('Open ','')}</div>
-                </div>`;
-            });
-        }
+<div class="relative inline-block">
+<button onclick="toggleHistDropdown()" class="dropbtn bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold flex items-center gap-2">
+History <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</button>
+<div id="histDropdown" class="dropdown-content absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-100 z-[60] overflow-hidden">
+<button onclick="viewApprovalHistory()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-blue-900 font-bold transition">Approval History</button>
+<button onclick="viewBillHistory()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-green-700 font-bold border-t transition">Bill History</button>
+<button onclick="viewRemovalHistory()" class="w-full text-left px-4 py-3 hover:bg-slate-50 text-red-600 font-bold border-t transition">Car Removal History</button>
+</div>
+</div>
 
-        // ============================================================
-        // REMOVE FORM
-        // ============================================================
-        function openRemoveForm() {
-            let occOpts = '';
-            Object.keys(db.slots).forEach(id => {
-                if (db.slots[id].status === 'occupied') occOpts += `<option value="${id}">${id} - ${db.slots[id].name}</option>`;
-            });
-            showModal(`
-                <h2 class="text-2xl font-bold mb-2 text-red-600">Remove Car Application</h2>
-                <div class="mb-6">
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Select Occupied Slot</label>
-                    <select id="removeSlotSelector" onchange="populateRemoveForm(this.value)" class="w-full p-3 border-2 border-red-200 rounded-xl bg-red-50 font-bold outline-none">
-                        <option value="">-- Choose Slot --</option>
-                        ${occOpts}
-                    </select>
-                </div>
-                <form id="removeForm" onsubmit="submitRemovalRequest(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-40 pointer-events-none transition-all">
-                    <input type="hidden" name="slotId" id="remSlotId">
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase">Customer Name</label><input type="text" name="name" id="remName" class="w-full p-3 border rounded-xl bg-slate-50" readonly></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase">Advance Amount (₹)</label><input type="text" name="advance" id="remAdvance" class="w-full p-3 border rounded-xl bg-slate-50" readonly></div>
-                    <div class="md:col-span-2"><label class="block text-[10px] font-bold text-red-500 uppercase">Pending Dues (₹)</label><input type="text" name="pendingBalance" id="remPending" class="w-full p-3 border-2 border-red-100 rounded-xl font-bold text-red-600" readonly></div>
-                    <button type="submit" class="md:col-span-2 bg-red-600 text-white py-4 rounded-2xl font-bold shadow-lg">Send Removal Request to Admin</button>
-                </form>
-            `);
-        }
+${activeUser.role === 'admin' ? `<button onclick="applyMonthlyRent()" class="bg-red-600 text-white px-5 py-3 rounded-2xl font-bold">➕ Update Rent</button>` : ''}
+<button onclick="viewPendingList()" class="bg-orange-500 text-white px-5 py-3 rounded-2xl font-bold">Pending</button>
+</div>
+</div>
+${activeUser.role === 'admin' ? renderAdminAlerts() : ''}
+<div id="slotMap" class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-10 lg:grid-cols-12 gap-3"></div>
+`;
+renderMap();
+}
 
-        function populateRemoveForm(id) {
-            const form = document.getElementById('removeForm');
-            if (!id) { form.classList.add('opacity-40', 'pointer-events-none'); return; }
-            const data = db.slots[id];
-            document.getElementById('remSlotId').value = id;
-            document.getElementById('remName').value = data.name || '';
-            document.getElementById('remAdvance').value = data.advance || 0;
-            document.getElementById('remPending').value = data.pendingBalance || 0;
-            form.classList.remove('opacity-40', 'pointer-events-none');
-        }
+function renderMap(query = "") {
+const container = document.getElementById('slotMap');
+container.innerHTML = "";
+Object.keys(db.slots).forEach(id => {
+if (query && !id.toLowerCase().includes(query.toLowerCase())) return;
+const slot = db.slots[id];
+const color = slot.status === 'vacant' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-blue-600 border-blue-800 text-white';
+container.innerHTML += `<div onclick="viewSlot('${id}')" class="slot-card border-2 ${color} p-3 rounded-2xl text-center cursor-pointer">
+<div class="text-[9px] font-black uppercase ${slot.status === 'occupied' ? 'opacity-90' : 'opacity-50'} tracking-widest">${slot.type || 'Shed'}</div>
+<div class="text-lg font-black">${id.replace('Shed ','').replace('Open ','')}</div>
+</div>`;
+});
+}
 
-        // ✅ BUG 1 FIXED: correct flags + db.applications.push(app) added
-        function submitRemovalRequest(e) {
-            e.preventDefault();
-            const fd = new FormData(e.target);
-            const app = Object.fromEntries(fd.entries());
-            app.appId = Date.now();
-            app.status = 'pending';
-            app.removalRequest = true;
-            app.requestType = 'Removal';
-            db.applications.push(app);
-            save();
-            closeModal();
-            alert("Removal request sent to Admin!");
-            renderDashboard();
-        }
+// ============================================================
+// REMOVE FORM
+// ============================================================
+function openRemoveForm() {
+let occOpts = '';
+Object.keys(db.slots).forEach(id => {
+if (db.slots[id].status === 'occupied') occOpts += `<option value="${id}">${id} - ${db.slots[id].name}</option>`;
+});
+showModal(`
+<h2 class="text-2xl font-bold mb-2 text-red-600">Remove Car Application</h2>
+<div class="mb-6">
+<label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 ml-1">Select Occupied Slot</label>
+<select id="removeSlotSelector" onchange="populateRemoveForm(this.value)" class="w-full p-3 border-2 border-red-200 rounded-xl bg-red-50 font-bold outline-none">
+<option value="">-- Choose Slot --</option>
+${occOpts}
+</select>
+</div>
+<form id="removeForm" onsubmit="submitRemovalRequest(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-40 pointer-events-none transition-all">
+<input type="hidden" name="slotId" id="remSlotId">
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase">Customer Name</label><input type="text" name="name" id="remName" class="w-full p-3 border rounded-xl bg-slate-50" readonly></div>
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase">Advance Amount (₹)</label><input type="text" name="advance" id="remAdvance" class="w-full p-3 border rounded-xl bg-slate-50" readonly></div>
+<div class="md:col-span-2"><label class="block text-[10px] font-bold text-red-500 uppercase">Pending Dues (₹)</label><input type="text" name="pendingBalance" id="remPending" class="w-full p-3 border-2 border-red-100 rounded-xl font-bold text-red-600" readonly></div>
+<button type="submit" class="md:col-span-2 bg-red-600 text-white py-4 rounded-2xl font-bold shadow-lg">Send Removal Request to Admin</button>
+</form>
+`);
+}
 
-        function viewRemovalHistory() {
-            let list = [...(db.removalHistory || [])].reverse().map(h => `<tr class="border-b"><td class="p-3"><b>${h.name}</b><br><span class="text-[10px] opacity-50 uppercase">${h.slotId}</span></td><td class="p-3">₹${h.advance}</td><td class="p-3 text-red-500">₹${h.pending}</td><td class="p-3 text-[10px]">${h.date}</td></tr>`).join('');
-            showModal(`<h2 class="text-xl font-black mb-4 text-red-600">Car Removal History</h2><div class="max-h-96 overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50"><th class="p-3">Customer</th><th class="p-3">Advance</th><th class="p-3">Pending at Exit</th><th class="p-3">Date</th></tr></thead><tbody>${list || '<tr><td colspan="4" class="p-6 text-center">No removal history</td></tr>'}</tbody></table></div>`);
-        }
+function populateRemoveForm(id) {
+const form = document.getElementById('removeForm');
+if (!id) { form.classList.add('opacity-40', 'pointer-events-none'); return; }
+const data = db.slots[id];
+document.getElementById('remSlotId').value = id;
+document.getElementById('remName').value = data.name || '';
+document.getElementById('remAdvance').value = data.advance || 0;
+document.getElementById('remPending').value = data.pendingBalance || 0;
+form.classList.remove('opacity-40', 'pointer-events-none');
+}
 
-        // ✅ BUG 3 FIXED: badge color now uses requestType as fallback
-        function renderAdminAlerts() {
-            const pending = db.applications.filter(a => a.status === 'pending');
-            if (pending.length === 0) return '';
-            let html = `<div class="bg-blue-50 border-2 border-blue-100 p-6 rounded-3xl mb-8"><h3 class="font-bold text-blue-900 mb-4">Pending Approvals</h3>`;
-            pending.forEach(app => {
-                let badge = (app.removalRequest || app.requestType === 'Removal') ? 'Removal' :
-                            (app.editRequest   || app.requestType === 'Edit')    ? 'Edit'    : 'New';
-                let color = (app.removalRequest || app.requestType === 'Removal') ? 'bg-red-600' :
-                            (app.editRequest   || app.requestType === 'Edit')    ? 'bg-indigo-600' : 'bg-green-600';
-                html += `<div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm mb-3">
-                    <div class="text-sm"><span class="${color} text-white px-2 py-0.5 rounded text-[9px] font-black mr-2 uppercase">${badge}</span><b>${app.name}</b> (${app.slotId})</div>
-                    <div class="flex gap-2">
-                        <button onclick="processApp(${app.appId}, true)" class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Approve</button>
-                        <button onclick="processApp(${app.appId}, false)" class="bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold">Reject</button>
-                    </div>
-                </div>`;
-            });
-            return html + `</div>`;
-        }
+// ✅ BUG 1 FIXED: correct flags + db.applications.push(app) added
+function submitRemovalRequest(e) {
+e.preventDefault();
+const fd = new FormData(e.target);
+const app = Object.fromEntries(fd.entries());
+app.appId = Date.now();
+app.status = 'pending';
+app.removalRequest = true;
+app.requestType = 'Removal';
+db.applications.push(app);
+save();
+closeModal();
+alert("Removal request sent to Admin!");
+renderDashboard();
+}
 
-        function processApp(appId, approve) {
-            const app = db.applications.find(a => a.appId === appId);
-            if (approve) {
-                app.status = 'Approved';
-                if (app.removalRequest || app.requestType === 'Removal') {
-                    db.removalHistory.push({ name: app.name, slotId: app.slotId, advance: app.advance, pending: app.pendingBalance, date: new Date().toLocaleDateString() });
-                    db.slots[app.slotId] = { status: 'vacant', type: app.slotId.includes('Shed') ? 'Shed' : 'Open' };
-                } else {
-                    const existing = db.slots[app.slotId];
-                    db.slots[app.slotId] = { ...app, status: 'occupied', paid: app.editRequest ? (existing.paid || 0) : 0, joinDate: app.editRequest ? (existing.joinDate) : new Date().toISOString(), pendingBalance: app.editRequest ? (existing.pendingBalance || 0) : (parseInt(app.advance) + parseInt(app.rent)) };
-                }
-            } else { app.status = 'Rejected'; }
-            save(); renderDashboard();
-        }
+function viewRemovalHistory() {
+let list = [...(db.removalHistory || [])].reverse().map(h => `<tr class="border-b"><td class="p-3"><b>${h.name}</b><br><span class="text-[10px] opacity-50 uppercase">${h.slotId}</span></td><td class="p-3">₹${h.advance}</td><td class="p-3 text-red-500">₹${h.pending}</td><td class="p-3 text-[10px]">${h.date}</td></tr>`).join('');
+showModal(`<h2 class="text-xl font-black mb-4 text-red-600">Car Removal History</h2><div class="max-h-96 overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50"><th class="p-3">Customer</th><th class="p-3">Advance</th><th class="p-3">Pending at Exit</th><th class="p-3">Date</th></tr></thead><tbody>${list || '<tr><td colspan="4" class="p-6 text-center">No removal history</td></tr>'}</tbody></table></div>`);
+}
 
-        function applyMonthlyRent() {
-            const pass = prompt("Please enter Passkey to Update Rent:");
-            if (pass !== UPDATE_PASSKEY) { alert("Incorrect Passkey!"); return; }
-            Object.keys(db.slots).forEach(id => {
-                const s = db.slots[id];
-                if (s.status === 'occupied') {
-                    s.pendingBalance = parseInt(s.pendingBalance || 0) + parseInt(s.rent || 0);
-                }
-            });
-            save(); renderDashboard(); alert("Rent Updated.");
-        }
+// ✅ BUG 3 FIXED: badge color now uses requestType as fallback
+function renderAdminAlerts() {
+const pending = db.applications.filter(a => a.status === 'pending');
+if (pending.length === 0) return '';
+let html = `<div class="bg-blue-50 border-2 border-blue-100 p-6 rounded-3xl mb-8"><h3 class="font-bold text-blue-900 mb-4">Pending Approvals</h3>`;
+pending.forEach(app => {
+let badge = (app.removalRequest || app.requestType === 'Removal') ? 'Removal' :
+(app.editRequest || app.requestType === 'Edit') ? 'Edit' : 'New';
+let color = (app.removalRequest || app.requestType === 'Removal') ? 'bg-red-600' :
+(app.editRequest || app.requestType === 'Edit') ? 'bg-indigo-600' : 'bg-green-600';
+html += `<div class="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm mb-3">
+<div class="text-sm"><span class="${color} text-white px-2 py-0.5 rounded text-[9px] font-black mr-2 uppercase">${badge}</span><b>${app.name}</b> (${app.slotId})</div>
+<div class="flex gap-2">
+<button onclick="processApp(${app.appId}, true)" class="bg-green-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Approve</button>
+<button onclick="processApp(${app.appId}, false)" class="bg-slate-200 text-slate-600 px-4 py-2 rounded-xl text-xs font-bold">Reject</button>
+</div>
+</div>`;
+});
+return html + `</div>`;
+}
 
-        // ============================================================
-        // NEW APPLICATION
-        // ============================================================
-        function openAppForm() {
-            let shedOpts = '', openOpts = '';
-            Object.keys(db.slots).forEach(id => {
-                if (db.slots[id].status !== 'vacant') return;
-                const opt = `<option value="${id}">${id}</option>`;
-                if (id.includes('Shed')) shedOpts += opt; else openOpts += opt;
-            });
-            showModal(`
-                <h2 class="text-2xl font-bold mb-6 text-blue-900">New Application</h2>
-                <form onsubmit="submitApplication(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Customer Name</label><input type="text" name="name" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Phone Number</label><input type="tel" name="phone" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Car Number</label><input type="text" name="carNum" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Aadhaar No</label><input type="text" name="aadhaar" class="w-full p-3 border rounded-xl" required></div>
-                    <div class="md:col-span-2"><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Address</label><input type="text" name="address" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Monthly Rent</label><input type="number" name="rent" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Advance Payment</label><input type="number" name="advance" class="w-full p-3 border rounded-xl" required></div>
-                    <div class="md:col-span-2"><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Select Slot</label><select name="slotId" class="w-full p-3 border rounded-xl bg-slate-50 font-bold" required><option value="">-- Choose --</option><optgroup label="SHED">${shedOpts}</optgroup><optgroup label="OPEN">${openOpts}</optgroup></select></div>
-                    <button type="submit" class="md:col-span-2 bg-blue-900 text-white py-4 rounded-2xl font-bold">Submit</button>
-                </form>
-            `);
-        }
+function processApp(appId, approve) {
+const app = db.applications.find(a => a.appId === appId);
+if (approve) {
+app.status = 'Approved';
+if (app.removalRequest || app.requestType === 'Removal') {
+// FIX: Read live pending from slot at moment of admin approval (not stale form value)
+const liveSlot = db.slots[app.slotId] || {};
+const pendingAtExit = liveSlot.pendingBalance !== undefined ? liveSlot.pendingBalance : (app.pendingBalance || 0);
+db.removalHistory.push({ name: app.name, slotId: app.slotId, advance: app.advance, pending: pendingAtExit, pendingAtExit: pendingAtExit, date: new Date().toLocaleDateString('en-IN'), time: new Date().toLocaleTimeString('en-IN') });
+db.slots[app.slotId] = { status: 'vacant', type: app.slotId.includes('Shed') ? 'Shed' : 'Open' };
+} else {
+const existing = db.slots[app.slotId];
+db.slots[app.slotId] = { ...app, status: 'occupied', paid: app.editRequest ? (existing.paid || 0) : 0, joinDate: app.editRequest ? (existing.joinDate) : new Date().toISOString(), pendingBalance: app.editRequest ? (existing.pendingBalance || 0) : (parseInt(app.advance) + parseInt(app.rent)) };
+}
+} else { app.status = 'Rejected'; }
+save(); renderDashboard();
+}
 
-        function submitApplication(e) {
-            e.preventDefault();
-            const fd = new FormData(e.target);
-            const app = Object.fromEntries(fd.entries());
-            app.appId = Date.now();
-            app.status = 'pending';
-            app.requestType = 'New';
-            db.applications.push(app);
-            save(); closeModal(); renderDashboard();
-        }
+function applyMonthlyRent() {
+const pass = prompt("Please enter Passkey to Update Rent:");
+if (pass !== UPDATE_PASSKEY) { alert("Incorrect Passkey!"); return; }
+Object.keys(db.slots).forEach(id => {
+const s = db.slots[id];
+if (s.status === 'occupied') {
+s.pendingBalance = parseInt(s.pendingBalance || 0) + parseInt(s.rent || 0);
+}
+});
+save(); renderDashboard(); alert("Rent Updated.");
+}
 
-        // ============================================================
-        // EDIT APPLICATION
-        // ============================================================
-        function openEditForm() {
-            let occOpts = '';
-            Object.keys(db.slots).forEach(id => {
-                if (db.slots[id].status === 'occupied') occOpts += `<option value="${id}">${id} - ${db.slots[id].name}</option>`;
-            });
-            showModal(`
-                <h2 class="text-2xl font-bold mb-6 text-indigo-900">Edit Application</h2>
-                <div class="mb-6"><select id="editSlotSelector" onchange="populateEditForm(this.value)" class="w-full p-3 border-2 border-indigo-200 rounded-xl bg-indigo-50 font-bold"><option value="">-- Choose Slot --</option>${occOpts}</select></div>
-                <form id="editForm" onsubmit="submitEditRequest(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-40 pointer-events-none transition-all">
-                    <input type="hidden" name="slotId" id="editSlotId">
-                    <div><label class="block text-[10px] font-bold text-blue-900 uppercase">Customer Name</label><input type="text" name="name" id="editName" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-blue-900 uppercase">Phone Number</label><input type="tel" name="phone" id="editPhone" class="w-full p-3 border rounded-xl" required></div>
-                    <div class="md:col-span-2"><label class="block text-[10px] font-bold text-blue-900 uppercase">Address</label><input type="text" name="address" id="editAddress" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-blue-900 uppercase">Car Number</label><input type="text" name="carNum" id="editCarNum" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-blue-900 uppercase">Aadhaar No</label><input type="text" name="aadhaar" id="editAadhaar" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-blue-900 uppercase">Advance (₹)</label><input type="number" name="advance" id="editAdvance" class="w-full p-3 border rounded-xl" required></div>
-                    <div><label class="block text-[10px] font-bold text-blue-900 uppercase">Rent (₹)</label><input type="number" name="rent" id="editRent" class="w-full p-3 border rounded-xl" required></div>
-                    <button type="submit" class="md:col-span-2 bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-lg">Update & Send Request</button>
-                </form>
-            `);
-        }
+// ============================================================
+// NEW APPLICATION
+// ============================================================
+function openAppForm() {
+let shedOpts = '', openOpts = '';
+Object.keys(db.slots).forEach(id => {
+if (db.slots[id].status !== 'vacant') return;
+const opt = `<option value="${id}">${id}</option>`;
+if (id.includes('Shed')) shedOpts += opt; else openOpts += opt;
+});
+showModal(`
+<h2 class="text-2xl font-bold mb-6 text-blue-900">New Application</h2>
+<form onsubmit="submitApplication(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Customer Name</label><input type="text" name="name" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Phone Number</label><input type="tel" name="phone" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Car Number</label><input type="text" name="carNum" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Aadhaar No</label><input type="text" name="aadhaar" class="w-full p-3 border rounded-xl" required></div>
+<div class="md:col-span-2"><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Address</label><input type="text" name="address" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Monthly Rent</label><input type="number" name="rent" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Advance Payment</label><input type="number" name="advance" class="w-full p-3 border rounded-xl" required></div>
+<div class="md:col-span-2"><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1 ml-1">Select Slot</label><select name="slotId" class="w-full p-3 border rounded-xl bg-slate-50 font-bold" required><option value="">-- Choose --</option><optgroup label="SHED">${shedOpts}</optgroup><optgroup label="OPEN">${openOpts}</optgroup></select></div>
+<button type="submit" class="md:col-span-2 bg-blue-900 text-white py-4 rounded-2xl font-bold">Submit</button>
+</form>
+`);
+}
 
-        function populateEditForm(id) {
-            const form = document.getElementById('editForm');
-            if (!id) { form.classList.add('opacity-40', 'pointer-events-none'); return; }
-            const data = db.slots[id];
-            document.getElementById('editSlotId').value = id;
-            document.getElementById('editName').value = data.name;
-            document.getElementById('editPhone').value = data.phone;
-            document.getElementById('editAddress').value = data.address;
-            document.getElementById('editCarNum').value = data.carNum;
-            document.getElementById('editAadhaar').value = data.aadhaar;
-            document.getElementById('editAdvance').value = data.advance;
-            document.getElementById('editRent').value = data.rent;
-            form.classList.remove('opacity-40', 'pointer-events-none');
-        }
+function submitApplication(e) {
+e.preventDefault();
+const fd = new FormData(e.target);
+const app = Object.fromEntries(fd.entries());
+app.appId = Date.now();
+app.status = 'pending';
+app.requestType = 'New';
+db.applications.push(app);
+save(); closeModal(); renderDashboard();
+}
 
-        // ✅ BUG 2 FIXED: db.applications.push(app) added
-        function submitEditRequest(e) {
-            e.preventDefault();
-            const fd = new FormData(e.target);
-            const app = Object.fromEntries(fd.entries());
-            app.appId = Date.now();
-            app.status = 'pending';
-            app.editRequest = true;
-            app.requestType = 'Edit';
-            db.applications.push(app);
-            save(); closeModal(); alert("Request sent!"); renderDashboard();
-        }
+// ============================================================
+// EDIT APPLICATION
+// ============================================================
+function openEditForm() {
+let occOpts = '';
+Object.keys(db.slots).forEach(id => {
+if (db.slots[id].status === 'occupied') occOpts += `<option value="${id}">${id} - ${db.slots[id].name}</option>`;
+});
+showModal(`
+<h2 class="text-2xl font-bold mb-6 text-indigo-900">Edit Application</h2>
+<div class="mb-6"><select id="editSlotSelector" onchange="populateEditForm(this.value)" class="w-full p-3 border-2 border-indigo-200 rounded-xl bg-indigo-50 font-bold"><option value="">-- Choose Slot --</option>${occOpts}</select></div>
+<form id="editForm" onsubmit="submitEditRequest(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4 opacity-40 pointer-events-none transition-all">
+<input type="hidden" name="slotId" id="editSlotId">
+<div><label class="block text-[10px] font-bold text-blue-900 uppercase">Customer Name</label><input type="text" name="name" id="editName" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-blue-900 uppercase">Phone Number</label><input type="tel" name="phone" id="editPhone" class="w-full p-3 border rounded-xl" required></div>
+<div class="md:col-span-2"><label class="block text-[10px] font-bold text-blue-900 uppercase">Address</label><input type="text" name="address" id="editAddress" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-blue-900 uppercase">Car Number</label><input type="text" name="carNum" id="editCarNum" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-blue-900 uppercase">Aadhaar No</label><input type="text" name="aadhaar" id="editAadhaar" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-blue-900 uppercase">Advance (₹)</label><input type="number" name="advance" id="editAdvance" class="w-full p-3 border rounded-xl" required></div>
+<div><label class="block text-[10px] font-bold text-blue-900 uppercase">Rent (₹)</label><input type="number" name="rent" id="editRent" class="w-full p-3 border rounded-xl" required></div>
+<button type="submit" class="md:col-span-2 bg-indigo-700 text-white py-4 rounded-2xl font-bold shadow-lg">Update & Send Request</button>
+</form>
+`);
+}
 
-        // ============================================================
-        // BILL
-        // ============================================================
-        function openBillForm() {
-            let shedOpts = '', openOpts = '';
-            Object.keys(db.slots).forEach(id => { const opt = `<option value="${id}">${id}</option>`; if (id.includes('Shed')) shedOpts += opt; else openOpts += opt; });
-            showModal(`<h2 class="text-2xl font-bold mb-6 text-green-700">Generate Bill</h2><form onsubmit="collectPayment(event, document.getElementById('billSlotId').value)" class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="md:col-span-2"><label class="text-[10px] font-bold text-slate-400 uppercase">Select Slot</label><select id="billSlotId" onchange="autoFillBillData(this.value)" class="w-full p-3 border rounded-xl" required><option value="">-- Select --</option><optgroup label="SHED">${shedOpts}</optgroup><optgroup label="OPEN">${openOpts}</optgroup></select></div><input type="date" id="billDate" class="p-3 border rounded-xl" required value="${new Date().toISOString().split('T')[0]}"><select id="billPayMethod" class="p-3 border rounded-xl font-bold" required><option value="Cash">Cash</option><option value="Online">Online</option></select><input type="text" id="billName" placeholder="Name" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billPhone" placeholder="Phone" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billCar" placeholder="Car" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billAadhaar" placeholder="Aadhaar" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billRent" placeholder="Rent" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billAddress" placeholder="Address" class="p-3 border rounded-xl bg-slate-100 md:col-span-2" readonly><div class="md:col-span-2"><input type="number" name="amt" id="billAmount" placeholder="Enter Amount" class="w-full p-4 border-2 border-green-500 rounded-xl text-xl font-bold" required></div><button type="submit" class="md:col-span-2 bg-green-700 text-white py-4 rounded-2xl font-bold">Generate</button></form>`);
-        }
+function populateEditForm(id) {
+const form = document.getElementById('editForm');
+if (!id) { form.classList.add('opacity-40', 'pointer-events-none'); return; }
+const data = db.slots[id];
+document.getElementById('editSlotId').value = id;
+document.getElementById('editName').value = data.name;
+document.getElementById('editPhone').value = data.phone;
+document.getElementById('editAddress').value = data.address;
+document.getElementById('editCarNum').value = data.carNum;
+document.getElementById('editAadhaar').value = data.aadhaar;
+document.getElementById('editAdvance').value = data.advance;
+document.getElementById('editRent').value = data.rent;
+form.classList.remove('opacity-40', 'pointer-events-none');
+}
 
-        function autoFillBillData(id) {
-            const s = db.slots[id];
-            if (s && s.status === 'occupied') {
-                document.getElementById('billName').value = s.name;
-                document.getElementById('billPhone').value = s.phone;
-                document.getElementById('billCar').value = s.carNum;
-                document.getElementById('billAadhaar').value = s.aadhaar;
-                document.getElementById('billAddress').value = s.address;
-                document.getElementById('billRent').value = "₹" + s.rent;
-            }
-        }
+// ✅ BUG 2 FIXED: db.applications.push(app) added
+function submitEditRequest(e) {
+e.preventDefault();
+const fd = new FormData(e.target);
+const app = Object.fromEntries(fd.entries());
+app.appId = Date.now();
+app.status = 'pending';
+app.editRequest = true;
+app.requestType = 'Edit';
+db.applications.push(app);
+save(); closeModal(); alert("Request sent!"); renderDashboard();
+}
 
-        function collectPayment(e, id) {
-            e.preventDefault();
-            const amt = parseInt(document.getElementById('billAmount').value);
-            db.billHistory.push({ slotId: id, name: db.slots[id].name, amount: amt, date: document.getElementById('billDate').value, method: document.getElementById('billPayMethod').value });
-            db.slots[id].pendingBalance = (parseInt(db.slots[id].pendingBalance) || 0) - amt;
-            save(); closeModal(); renderDashboard(); alert("Payment Recorded!");
-        }
+// ============================================================
+// BILL
+// ============================================================
+function openBillForm() {
+let shedOpts = '', openOpts = '';
+Object.keys(db.slots).forEach(id => { const opt = `<option value="${id}">${id}</option>`; if (id.includes('Shed')) shedOpts += opt; else openOpts += opt; });
+showModal(`<h2 class="text-2xl font-bold mb-6 text-green-700">Generate Bill</h2><form onsubmit="collectPayment(event, document.getElementById('billSlotId').value)" class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="md:col-span-2"><label class="text-[10px] font-bold text-slate-400 uppercase">Select Slot</label><select id="billSlotId" onchange="autoFillBillData(this.value)" class="w-full p-3 border rounded-xl" required><option value="">-- Select --</option><optgroup label="SHED">${shedOpts}</optgroup><optgroup label="OPEN">${openOpts}</optgroup></select></div><input type="date" id="billDate" class="p-3 border rounded-xl" required value="${new Date().toISOString().split('T')[0]}"><select id="billPayMethod" class="p-3 border rounded-xl font-bold" required><option value="Cash">Cash</option><option value="Online">Online</option></select><input type="text" id="billName" placeholder="Name" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billPhone" placeholder="Phone" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billCar" placeholder="Car" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billAadhaar" placeholder="Aadhaar" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billRent" placeholder="Rent" class="p-3 border rounded-xl bg-slate-100" readonly><input type="text" id="billAddress" placeholder="Address" class="p-3 border rounded-xl bg-slate-100 md:col-span-2" readonly><div class="md:col-span-2"><input type="number" name="amt" id="billAmount" placeholder="Enter Amount" class="w-full p-4 border-2 border-green-500 rounded-xl text-xl font-bold" required></div><button type="submit" class="md:col-span-2 bg-green-700 text-white py-4 rounded-2xl font-bold">Generate</button></form>`);
+}
 
-        // ============================================================
-        // HISTORY
-        // ============================================================
-        function viewApprovalHistory() {
-            let list = [...db.applications].reverse().map(app => {
-                const type = (app.removalRequest || app.requestType === 'Removal') ? 'Removal' :
-                             (app.editRequest   || app.requestType === 'Edit')    ? 'Edit'    : 'New';
-                return `<tr class="border-b"><td class="p-3"><b>${app.name}</b><br><span class="text-[10px] opacity-50 uppercase">${type}</span></td><td class="p-3 font-bold">${app.slotId}</td><td class="p-3"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${app.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${app.status}</span></td></tr>`;
-            }).join('');
-            showModal(`<h2 class="text-xl font-black mb-4 text-indigo-900">Approval History</h2><div class="max-h-96 overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50"><th class="p-3">Customer</th><th class="p-3">Slot</th><th class="p-3">Status</th></tr></thead><tbody>${list || '<tr><td colspan="3" class="p-6 text-center">No history</td></tr>'}</tbody></table></div>`);
-        }
+function autoFillBillData(id) {
+const s = db.slots[id];
+if (s && s.status === 'occupied') {
+document.getElementById('billName').value = s.name;
+document.getElementById('billPhone').value = s.phone;
+document.getElementById('billCar').value = s.carNum;
+document.getElementById('billAadhaar').value = s.aadhaar;
+document.getElementById('billAddress').value = s.address;
+document.getElementById('billRent').value = "₹" + s.rent;
+}
+}
 
-        function viewBillHistory() {
-            let list = [...db.billHistory].reverse().map(b => `<tr class="border-b"><td class="p-3"><b>${b.name}</b><br><span class="text-[10px] opacity-50 uppercase">${b.slotId}</span></td><td class="p-3 font-bold text-green-600">₹${b.amount}</td><td class="p-3"><span class="text-[10px] block opacity-50 uppercase font-bold">${b.method}</span>${b.date}</td></tr>`).join('');
-            showModal(`<h2 class="text-xl font-black mb-4 text-green-700">Bill History</h2><div class="max-h-96 overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50"><th class="p-3">Customer</th><th class="p-3">Amount</th><th class="p-3">Date</th></tr></thead><tbody>${list || '<tr><td colspan="3" class="p-6 text-center">No bills</td></tr>'}</tbody></table></div>`);
-        }
+function collectPayment(e, id) {
+e.preventDefault();
+const amt = parseInt(document.getElementById('billAmount').value);
+db.billHistory.push({ slotId: id, name: db.slots[id].name, amount: amt, date: document.getElementById('billDate').value, method: document.getElementById('billPayMethod').value });
+db.slots[id].pendingBalance = (parseInt(db.slots[id].pendingBalance) || 0) - amt;
+save(); closeModal(); renderDashboard(); alert("Payment Recorded!");
+}
 
-        function viewPendingList() {
-            let list = '';
-            Object.keys(db.slots).forEach(id => { const s = db.slots[id]; if (s.status === 'occupied') list += `<tr><td class="p-3 border-b">${id}</td><td class="p-3 border-b">${s.name}</td><td class="p-3 border-b text-red-500 font-bold">₹${s.pendingBalance || 0}</td></tr>`; });
-            showModal(`<h3 class="text-xl font-black mb-4">Pending List</h3><table class="w-full text-left text-sm"><thead><tr class="bg-slate-100"><th class="p-3">Slot</th><th class="p-3">Customer</th><th class="p-3">Total Pending</th></tr></thead><tbody>${list || '<tr><td colspan="3" class="p-6 text-center opacity-30">No tenants</td></tr>'}</tbody></table>`);
-        }
+// ============================================================
+// HISTORY
+// ============================================================
+function viewApprovalHistory() {
+let list = [...db.applications].reverse().map(app => {
+const type = (app.removalRequest || app.requestType === 'Removal') ? 'Removal' :
+(app.editRequest || app.requestType === 'Edit') ? 'Edit' : 'New';
+return `<tr class="border-b"><td class="p-3"><b>${app.name}</b><br><span class="text-[10px] opacity-50 uppercase">${type}</span></td><td class="p-3 font-bold">${app.slotId}</td><td class="p-3"><span class="px-2 py-1 rounded text-[10px] font-black uppercase ${app.status === 'Approved' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${app.status}</span></td></tr>`;
+}).join('');
+showModal(`<h2 class="text-xl font-black mb-4 text-indigo-900">Approval History</h2><div class="max-h-96 overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50"><th class="p-3">Customer</th><th class="p-3">Slot</th><th class="p-3">Status</th></tr></thead><tbody>${list || '<tr><td colspan="3" class="p-6 text-center">No history</td></tr>'}</tbody></table></div>`);
+}
 
-        function editPendingBalance(id) {
-            const s = db.slots[id];
-            const newPending = prompt(`Adjust Pending Balance for ${id} (${s.name}):`, s.pendingBalance || 0);
-            if (newPending !== null && !isNaN(newPending)) {
-                s.pendingBalance = parseInt(newPending);
-                save(); renderDashboard(); closeModal(); alert("Updated successfully.");
-            }
-        }
+function viewBillHistory() {
+let list = [...db.billHistory].reverse().map(b => `<tr class="border-b"><td class="p-3"><b>${b.name}</b><br><span class="text-[10px] opacity-50 uppercase">${b.slotId}</span></td><td class="p-3 font-bold text-green-600">₹${b.amount}</td><td class="p-3"><span class="text-[10px] block opacity-50 uppercase font-bold">${b.method}</span>${b.date}</td></tr>`).join('');
+showModal(`<h2 class="text-xl font-black mb-4 text-green-700">Bill History</h2><div class="max-h-96 overflow-y-auto"><table class="w-full text-left text-sm"><thead><tr class="bg-slate-50"><th class="p-3">Customer</th><th class="p-3">Amount</th><th class="p-3">Date</th></tr></thead><tbody>${list || '<tr><td colspan="3" class="p-6 text-center">No bills</td></tr>'}</tbody></table></div>`);
+}
 
-        function viewSlot(id) {
-            const slot = db.slots[id];
-            if (slot.status === 'vacant') return;
-            showModal(`
-                <h2 class="text-3xl font-black text-blue-900 text-center mb-1">${id}</h2>
-                <p class="text-center text-2xl font-black uppercase text-slate-800 mb-6">${slot.name}</p>
-                <div class="grid grid-cols-2 gap-4 text-sm mb-6 bg-slate-50 p-6 rounded-3xl">
-                    <div><span class="block text-[10px] opacity-50 uppercase font-bold">Car Plate</span><b>${slot.carNum}</b></div>
-                    <div><span class="block text-[10px] opacity-50 uppercase font-bold">Phone No</span><b class="text-blue-700">${slot.phone}</b></div>
-                    <div class="col-span-2 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Aadhaar No</span><b class="tracking-widest">${slot.aadhaar}</b></div>
-                    <div class="col-span-2 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Address</span><b>${slot.address || 'N/A'}</b></div>
-                    <div class="text-indigo-600 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Advance</span><b>₹${slot.advance || 0}</b></div>
-                    <div class="text-blue-600 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Monthly Rent</span><b>₹${slot.rent}</b></div>
-                    <div class="text-red-600 border-t pt-2 col-span-2 flex justify-between items-end">
-                        <div><span class="block text-[10px] opacity-50 uppercase font-bold">Total Pending Due</span><b class="text-lg">₹${slot.pendingBalance || 0}</b></div>
-                        ${activeUser.role === 'admin' ? `<button onclick="editPendingBalance('${id}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm">Edit Pending</button>` : ''}
-                    </div>
-                </div>
-            `);
-        }
+function viewPendingList() {
+let list = '';
+Object.keys(db.slots).forEach(id => { const s = db.slots[id]; if (s.status === 'occupied') list += `<tr><td class="p-3 border-b">${id}</td><td class="p-3 border-b">${s.name}</td><td class="p-3 border-b text-red-500 font-bold">₹${s.pendingBalance || 0}</td></tr>`; });
+showModal(`<h3 class="text-xl font-black mb-4">Pending List</h3><table class="w-full text-left text-sm"><thead><tr class="bg-slate-100"><th class="p-3">Slot</th><th class="p-3">Customer</th><th class="p-3">Total Pending</th></tr></thead><tbody>${list || '<tr><td colspan="3" class="p-6 text-center opacity-30">No tenants</td></tr>'}</tbody></table>`);
+}
 
-        function renderCustomerDash(main) {
-            const slot = db.slots[activeUser.slotId];
-            main.innerHTML = `<div class="max-w-2xl mx-auto space-y-6"><div class="bg-white p-8 rounded-[3rem] shadow-2xl border-t-8 border-blue-900"><div class="text-center mb-8"><div class="text-5xl font-black text-blue-900">${activeUser.slotId}</div> <p class="text-slate-400 font-bold uppercase text-xs mt-2">Occupied by ${slot.name}</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone</span><span class="text-lg font-bold">${slot.phone}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Car</span><span class="text-lg font-bold">${slot.carNum}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 md:col-span-2"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Aadhaar No</span><span class="text-lg font-bold tracking-widest">${slot.aadhaar}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 md:col-span-2"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Address</span><span class="text-sm font-bold">${slot.address || 'N/A'}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-indigo-500 uppercase tracking-widest">Advance</span><span class="text-lg font-bold">₹${slot.advance || 0}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Rent</span><span class="text-lg font-bold">₹${slot.rent}</span></div> </div></div><div class="bg-red-600 p-8 rounded-[2.5rem] text-white flex justify-between items-center shadow-2xl overflow-hidden relative"><div class="relative z-10"><span class="block text-xs font-black uppercase opacity-60">Pending Dues</span><span class="text-4xl font-black italic">₹${slot.pendingBalance || 0}</span> </div><div class="opacity-20 transform scale-150 relative z-10"><svg class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div></div></div>`;
-        }
+function editPendingBalance(id) {
+const s = db.slots[id];
+const newPending = prompt(`Adjust Pending Balance for ${id} (${s.name}):`, s.pendingBalance || 0);
+if (newPending !== null && !isNaN(newPending)) {
+s.pendingBalance = parseInt(newPending);
+save(); renderDashboard(); closeModal(); alert("Updated successfully.");
+}
+}
 
-        function showModal(html) { document.getElementById('modalBody').innerHTML = html; document.getElementById('modal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+function viewSlot(id) {
+const slot = db.slots[id];
+if (slot.status === 'vacant') return;
+showModal(`
+<h2 class="text-3xl font-black text-blue-900 text-center mb-1">${id}</h2>
+<p class="text-center text-2xl font-black uppercase text-slate-800 mb-6">${slot.name}</p>
+<div class="grid grid-cols-2 gap-4 text-sm mb-6 bg-slate-50 p-6 rounded-3xl">
+<div><span class="block text-[10px] opacity-50 uppercase font-bold">Car Plate</span><b>${slot.carNum}</b></div>
+<div><span class="block text-[10px] opacity-50 uppercase font-bold">Phone No</span><b class="text-blue-700">${slot.phone}</b></div>
+<div class="col-span-2 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Aadhaar No</span><b class="tracking-widest">${slot.aadhaar}</b></div>
+<div class="col-span-2 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Address</span><b>${slot.address || 'N/A'}</b></div>
+<div class="text-indigo-600 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Advance</span><b>₹${slot.advance || 0}</b></div>
+<div class="text-blue-600 border-t pt-2"><span class="block text-[10px] opacity-50 uppercase font-bold">Monthly Rent</span><b>₹${slot.rent}</b></div>
+<div class="text-red-600 border-t pt-2 col-span-2 flex justify-between items-end">
+<div><span class="block text-[10px] opacity-50 uppercase font-bold">Total Pending Due</span><b class="text-lg">₹${slot.pendingBalance || 0}</b></div>
+${activeUser.role === 'admin' ? `<button onclick="editPendingBalance('${id}')" class="bg-red-500 text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase shadow-sm">Edit Pending</button>` : ''}
+</div>
+</div>
+`);
+}
 
-        // ============================================================
-        // BOOT
-        // ============================================================
-        initDB();
-        updateClock();
-    </script>
+function renderCustomerDash(main) {
+const slot = db.slots[activeUser.slotId];
+main.innerHTML = `<div class="max-w-2xl mx-auto space-y-6"><div class="bg-white p-8 rounded-[3rem] shadow-2xl border-t-8 border-blue-900"><div class="text-center mb-8"><div class="text-5xl font-black text-blue-900">${activeUser.slotId}</div> <p class="text-slate-400 font-bold uppercase text-xs mt-2">Occupied by ${slot.name}</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Phone</span><span class="text-lg font-bold">${slot.phone}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Car</span><span class="text-lg font-bold">${slot.carNum}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 md:col-span-2"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Aadhaar No</span><span class="text-lg font-bold tracking-widest">${slot.aadhaar}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 md:col-span-2"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Address</span><span class="text-sm font-bold">${slot.address || 'N/A'}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-indigo-500 uppercase tracking-widest">Advance</span><span class="text-lg font-bold">₹${slot.advance || 0}</span></div> <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><span class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Rent</span><span class="text-lg font-bold">₹${slot.rent}</span></div> </div></div><div class="bg-red-600 p-8 rounded-[2.5rem] text-white flex justify-between items-center shadow-2xl overflow-hidden relative"><div class="relative z-10"><span class="block text-xs font-black uppercase opacity-60">Pending Dues</span><span class="text-4xl font-black italic">₹${slot.pendingBalance || 0}</span> </div><div class="opacity-20 transform scale-150 relative z-10"><svg class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div></div></div>`;
+}
+
+function showModal(html) { document.getElementById('modalBody').innerHTML = html; document.getElementById('modal').classList.remove('hidden'); }
+function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+// ============================================================
+// BOOT
+// ============================================================
+initDB();
+updateClock();
+</script>
 </body>
 </html>
